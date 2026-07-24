@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETL Results</title>
+    <style>
+        :root {
+            --primary-color: #0f766e;
+            --primary-hover: #115e59;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-color: #0f172a;
+            --muted-color: #475569;
+            --border-color: #cbd5e1;
+            --table-header: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 32px 16px;
+        }
+
+        .container {
+            width: min(1200px, 100%);
+            margin: 0 auto;
+            background-color: var(--card-bg);
+            border-radius: 14px;
+            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+            padding: 24px;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            margin: 0 0 22px;
+            color: var(--muted-color);
+            font-size: 0.95rem;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background-color: #fff;
+        }
+
+        table.data {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 860px;
+        }
+
+        table.data th,
+        table.data td {
+            border: 1px solid var(--border-color);
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 0.9rem;
+            vertical-align: top;
+        }
+
+        table.data thead th {
+            background-color: var(--table-header);
+            color: #0f172a;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        table.data tbody tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn,
+        .btn-secondary {
+            display: inline-block;
+            text-decoration: none;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: #ffffff;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+
+        .empty {
+            border: 1px dashed var(--border-color);
+            border-radius: 10px;
+            padding: 18px;
+            color: var(--muted-color);
+            background-color: #f8fafc;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 16px;
+            }
+
+            h1 {
+                font-size: 1.45rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <h1>Prediction Results</h1>
+        <p class="subtitle">The ETL pipeline has completed. Review the generated loan status predictions below.</p>
+
+        {% if tables and tables|length > 0 %}
+            <div class="table-wrapper">
+                {% for table in tables %}
+                    {{ table | safe }}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty">No results are available yet. Run the ETL process to generate predictions.</div>
+        {% endif %}
+
+        <div class="actions">
+            <form action="{{ url_for('run_etl') }}" method="POST">
+                <button class="btn" type="submit">Run ETL Again</button>
+            </form>
+            <a class="btn-secondary" href="{{ url_for('upload_page') }}">Upload Another File</a>
+            <a class="btn-secondary" href="{{ url_for('index') }}">Back to Home</a>
+        </div>
+    </main>
+</body>
+</html>
